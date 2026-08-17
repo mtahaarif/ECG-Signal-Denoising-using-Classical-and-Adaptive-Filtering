@@ -13,7 +13,7 @@ Three noise-removal strategies are implemented and evaluated:
 
 The signals are synthetically corrupted with three realistic ECG noise sources (powerline interference, baseline wander, and EMG/muscle noise), filtered using each method, and then evaluated quantitatively (SNR, RMSE) and visually (time-domain plots, FFT spectra, spectrograms).
 
----
+--
 
 ## 2. Repository Contents
 
