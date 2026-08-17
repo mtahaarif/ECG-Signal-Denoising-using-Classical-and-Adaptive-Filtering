@@ -1,17 +1,4 @@
 # ECG Signal Denoising using Classical and Adaptive Filtering 
-
-**Department of Computer & Software Engineering, College of E&ME, NUST, Rawalpindi**
-**Course:** Digital Signal Processing
-**Instructor:** Ma'am Sundus Ashraf
-**Submission Date:** 15/05/2025
-
-**Team Members:**
-| Name | Registration No. |
-|---|---|
-| Muhammad Hashir Ashraf | 408557 |
-| Muhammad Taha | 417609 |
-| Talha Iftikhar | 410998 |
-
 ---
 
 ## 1. Project Overview
