@@ -9,7 +9,7 @@ Three noise-removal strategies are implemented and evaluated:
 
 1. **IIR (Butterworth) Filtering** — a cascade of a notch filter, a high-pass filter, and a low-pass filter.
 2. **LMS Adaptive Filtering** — an adaptive filter that updates its coefficients using the Least Mean Squares algorithm.
-3. **NLMS Adaptive Filtering** — a normalized variant of LMS with a step size that self-adjusts based on input signal energy (implemented and discussed in the written report; see [Section 6](#6-nlms-normalized-lms-filter-report-only)).
+3. **NLMS Adaptive Filtering** — a normalized variant of LMS with a step size that self-adjusts based on input signal energy (implemented and discussed in the written report; see [Section 6]
 
 The signals are synthetically corrupted with three realistic ECG noise sources (powerline interference, baseline wander, and EMG/muscle noise), filtered using each method, and then evaluated quantitatively (SNR, RMSE) and visually (time-domain plots, FFT spectra, spectrograms).
 
@@ -21,7 +21,6 @@ The signals are synthetically corrupted with three realistic ECG noise sources (
 |---|---|
 | [`project.m`](project.m) | Main, most developed MATLAB script. Loads a real ECG CSV (MIT-BIH style record `100.csv`), simulates noise, applies IIR (notch + high-pass + low-pass Butterworth) filtering **and** an LMS adaptive filter (via `dsp.LMSFilter`), computes SNR/RMSE metrics, and produces time-domain, frequency-domain, and spectrogram visualizations. |
 | [`project1.m`](project1.m) | Earlier/alternate script variant. Loads ECG data from a `.mat` file (SimEMG database), simulates noise, and designs filters interactively using MATLAB's **Filter Design & Analysis Tool (`fdatool`)** combined with `designfilt`. Also includes a naive real-time / moving-window filtering simulation. |
-| [`DSP_Project_Report.docx`](DSP_Project_Report.docx) | Formal project report submitted for the course. Contains the methodology, full annotated code listing (including the **NLMS filter**, which does not appear in the `.m` scripts), figures, and conclusions. |
 | `WhatsApp Image 2026-08-17 at 4.06.01 PM*.jpeg` | Screenshots of the MATLAB **Filter Designer (FDA Tool)** app showing the design of the high-pass (0.5 Hz cutoff, order 4, Fs = 180 Hz), band-stop/notch (59–61 Hz, order 4, Fs = 360 Hz), and low-pass (40 Hz cutoff, order 4, Fs = 360 Hz) IIR filters and their magnitude responses. |
 | `WhatsApp Image 2026-08-17 at 4.10.18 PM*.jpeg`, `4.10.19 PM*.jpeg` | Output result screenshots: overlaid ECG comparison plot (Clean vs. FIR/IIR Filtered vs. LMS Filtered), the stacked 4-subplot time-domain comparison, the 4-panel spectrogram comparison, and the frequency-spectrum (FFT) comparison plot. |
 
@@ -104,6 +103,9 @@ In [`project1.m`](project1.m), the equivalent filters are instead designed **int
 - Low-pass IIR: order 4, 40/50 Hz cutoff, Fs = 360 Hz (screenshot: `4.06.01 PM (2)`).
 
 These are applied causally with `filter()` rather than `filtfilt()`, and combined sequentially: **Notch → High-pass → Low-pass.**
+![Filter Design](filter-design.jpg)
+![Filter Design 2](filter-design-2.jpg)
+![Filter Design 3](filter-design-3.jpg)
 
 ### 4.4 LMS Adaptive Filtering
 
@@ -133,6 +135,11 @@ Two standard metrics are computed for each stage of the pipeline (noisy, IIR-fil
 4. **Spectrogram comparison** (4 subplots): Short-time Fourier spectrograms (window = 256, overlap = 250, `yaxis` orientation) for Clean, Noisy, IIR Filtered, and LMS Filtered signals, with a shared color scale (`clim([-80 -20])`) to visually compare noise-energy suppression over time.
 
 ---
+![Output](output.jpg)
+![Output](output-2.jpg)
+![Output](output-3.jpg)
+![Output](output-4.jpg)
+
 
 ## 5. Alternate Script: `project1.m`
 
@@ -147,9 +154,7 @@ Two standard metrics are computed for each stage of the pipeline (noisy, IIR-fil
 
 ---
 
-## 6. NLMS (Normalized LMS) Filter (Report Only)
-
-The written report ([`DSP_Project_Report.docx`](DSP_Project_Report.docx)) documents a **third filtering method — NLMS (Normalized Least Mean Squares)** — that extends `project.m` but is **not present in either `.m` file** in this repository. It is documented here for completeness since it is part of the submitted project:
+## 6. NLMS (Normalized LMS) Filter 
 
 ```matlab
 mu_nlms = 0.01;
@@ -171,7 +176,7 @@ end
 
 **How it differs from standard LMS:** NLMS normalizes the adaptation step size by the instantaneous energy of the input buffer (`epsilon + buffer_nlms' * buffer_nlms`), which improves convergence stability and speed when the input signal's power varies over time (non-stationary noise) — a common characteristic of biomedical signals like ECG.
 
-Per the report's conclusion, **NLMS achieved the best SNR improvement and RMSE reduction** of the three methods tested, making it the top performer for this task.
+Conclusion, **NLMS achieved the best SNR improvement and RMSE reduction** of the three methods tested, making it the top performer for this task.
 
 ---
 
@@ -185,8 +190,8 @@ Both scripts print the following metrics to the console (exact numeric values de
 - `SNR after filtering` (IIR, dB)
 - `SNR improvement` (dB)
 - `SNR after LMS filtering` (dB)
-- `SNR after NLMS filtering` (dB) — report only
-- RMSE before filtering, after IIR filtering, after LMS filtering, and after NLMS filtering (report only)
+- `SNR after NLMS filtering` (dB) 
+- RMSE before filtering, after IIR filtering, after LMS filtering, and after NLMS filtering 
 
 ### 7.2 Qualitative / Visual Results
 
@@ -201,7 +206,7 @@ Representative output figures (captured as screenshots in this repository) inclu
 - **Frequency spectrum comparison** — FFT magnitude (dB) from 0–100 Hz, clearly showing a large 60 Hz spike in the noisy signal that is fully attenuated in the IIR-filtered result.
 - **Spectrogram comparison** (4-panel, over a ~30 minute record) — visually demonstrates that the noisy signal has a persistent horizontal band of powerline energy around 60 Hz across the entire recording, which is largely absent from the IIR-filtered spectrogram.
 
-### 7.3 Conclusions (from the report)
+### 7.3 Conclusions
 
 - **IIR filtering** provided a strong, low-complexity baseline by removing known, fixed frequency bands (powerline, baseline wander, high-frequency noise).
 - **LMS adaptive filtering** dynamically tracked variations in the noise, offering modest improvements over the static IIR filter in some respects.
@@ -216,7 +221,6 @@ Representative output figures (captured as screenshots in this repository) inclu
 - **Hard-coded absolute file paths:** Both scripts reference local machine paths (`C:\Users\Hashir\Downloads\100.csv` in `project.m`, `D:/soft/Matlab/SimEMG database.../P1_1_Ag-AgCl.mat` in `project1.m`) that will not exist on another machine. These must be edited before running.
 - **No source dataset included:** The ECG CSV/`.mat` data files referenced by the scripts are not included in this repository.
 - **Synthetic (not real) noise:** All noise (powerline, baseline wander, EMG) is artificially generated and added to a clean recording rather than sourced from real-world noisy ECG acquisition, which somewhat idealizes the filtering problem.
-- **NLMS implementation is absent from the `.m` files:** it exists only in the Word report and would need to be manually added to `project.m` to reproduce those results in MATLAB.
 - **`project1.m` real-time simulation is a placeholder:** the moving-window loop reassigns a scalar via `filter()` per index in a way that is illustrative rather than a correct streaming/online-filter implementation (state is not carried between windows), and `fdatool` requires manual interaction, which blocks unattended/batch execution.
 - **Zero-phase vs. causal filtering:** `project.m` uses `filtfilt` (non-causal, offline-only), whereas `project1.m` uses `filter` (causal, real-time-capable) — the two scripts are not directly equivalent and represent different design trade-offs (phase distortion vs. real-time feasibility).
 
